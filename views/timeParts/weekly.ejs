@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weekly Insights</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Amita:wght@400;700&family=Playwrite+AT:ital,wght@0,100..400;1,100..400&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css" rel="stylesheet" type="text/css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      html {
+        background-color: black !important;
+      }
+    </style>
+</head>
+<body style="background-color: black; color: white; font-family: Poppins;" class="h-screen">
+    
+  <% if (error) { %>
+    <div class="alert alert-error">
+        <%= errorMsg %>
+    </div>
+  <% } else { %>
+    <div class="lg:ml-[540px] ml-[20px] mb-12">
+      <h1 class="mb-4 text-[25px] mb-3 text-[#94A3B8]">Choose Start Date to get Weekly Insights</h1>
+      <form action="/weekly" method="get">
+        <input class="input lg:input-md input-sm input-bordered input-warning" type="date" name="startDate" value="<%=startDate%>">
+        <button class="btn btn-sm btn-warning hover:bg-yellow-700" type="submit">Submit</button>
+      </form>
+    </div>
+
+    <% 
+      let dailyData = [];
+      let productiveData = [], sleepData = [], unusedData = [];
+      const start = new Date(startDate);
+      for(let i = 0; i < 7; i++) {
+        const currentDate = new Date(start);
+        currentDate.setDate(start.getDate() + i);
+        const dateString = currentDate.toISOString().split('T')[0];
+        let dailyProductive = 0, dailySleep = 0, dailyUnused = 0;
+
+        for(dataS of allData) {
+          if(dataS.date.toISOString().split('T')[0] === dateString) {
+            for(data of dataS.track) {
+              if(data.proHour) dailyProductive++;
+              if(data.sleep) dailySleep++;
+            }
+          }
+        }
+
+        dailyUnused = 24 - (dailyProductive + dailySleep);
+        productiveData.push(dailyProductive);
+        sleepData.push(dailySleep);
+        unusedData.push(dailyUnused);
+        dailyData.push(currentDate.toDateString().split(' ')[1] + ' ' + currentDate.getDate());
+      }
+    %>
+    <% 
+    let totalProductiveHour = 0, totalSleepHour = 0, totalUnusedHour = 0;
+    %>
+    <!-- calculating hours  -->
+      <% for(it of productiveData){ %>
+        <% totalProductiveHour += it; %>
+    <% } %>
+
+    <% for(it of sleepData){ %>
+        <% totalSleepHour += it; %>
+    <% } %>
+
+    <% for(it of unusedData){ %>
+        <% totalUnusedHour += it; %>
+    <% } %>
+
+
+    
+
+    <div class="ml-4 ml-2 lg:ml-[400px]">
+        <div class="ml-4 mb-4 text-xl text-semiBold"><h1>Productive Hours: </h1></div>
+        <canvas class="" id="productiveChart" style="max-width: 600px;"></canvas>
+        <div class=" my-6 text-xl text-semiBold"><span class="bg-[#404040] px-4 rounded-lg">Total Productive was: <%=totalProductiveHour %> Hours</span></div>
+    </div>
+    <hr class="my-[70px] ">
+    <div class="ml-4 ml-2 lg:ml-[400px]">
+        <div class="ml-4 mb-4 text-xl text-semiBold"><h1>Sleep Hours: </h1></div>
+        <canvas class="" id="sleepChart" style="max-width: 600px;"></canvas>
+        <div class=" my-6 text-xl text-semiBold"><span class="bg-[#404040] px-4 rounded-lg">Total Sleep was: <%=totalSleepHour %> Hours</span></div>
+    </div>
+    <hr class="my-[70px]">
+    <div class="ml-4 ml-2 lg:ml-[400px]">
+        <div class="ml-4 mb-4 text-xl text-semiBold"><h1>Unused Hours: </h1></div>
+        <canvas class="" id="unusedChart" style="max-width: 600px;"></canvas>
+        <div class=" my-6 text-xl text-semiBold"><span class="bg-[#404040] px-4 rounded-lg">Total Unused hour was: <%=totalUnusedHour %> </span></div>
+    </div>
+    
+    
+
+    <a class="ml-8" href="/">Home</a>
+
+    
+
+    <script>
+        // here we used - instead of = in ejs 
+        // Embedding JSON strings into JavaScript variables
+        const dailyData = <%- JSON.stringify(dailyData) %>;
+        const productiveData = <%- JSON.stringify(productiveData) %>;
+        const sleepData = <%- JSON.stringify(sleepData) %>;
+        const unusedData = <%- JSON.stringify(unusedData) %>;
+
+        // console.log(dailyData);
+        // console.log(productiveData);
+        // console.log(sleepData);
+        // console.log(unusedData);
+
+function graph(chartId, label, data, color){
+    new Chart(chartId, {
+    type: "bar",
+    data: {
+        labels: dailyData,
+        datasets: [{
+          label: label, // Productive Data
+        backgroundColor: color,
+        data: data
+        }]
+    },
+    options: {
+    legend: {display: false},
+    scales: {
+      yAxes: [{
+        ticks: {
+          beginAtZero: true,
+          fontColor: "white" // Color of the y-axis labels
+        },
+        gridLines: {
+          color: "gray" // Color of the y-axis grid lines
+        }
+      }],
+      xAxes: [{
+        ticks: {
+          fontColor: "white" // Color of the x-axis labels
+        },
+        gridLines: {
+          color: "gray" // Color of the x-axis grid lines
+        }
+      }]
+    }
+  }
+})
+}
+
+    graph("productiveChart", "Productive hours", productiveData, "green");
+    graph("sleepChart", "Sleep hours", sleepData, "yellow");
+    graph("unusedChart", "Unused hours", unusedData, "red");
+    
+
+    </script>
+
+
+  <% } %>
+
+</body>
+</html>

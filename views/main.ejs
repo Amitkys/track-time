@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Amita:wght@400;700&family=Playwrite+AT:ital,wght@0,100..400;1,100..400&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css" rel="stylesheet" type="text/css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        #alert-box {
+            display: none;
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 55; /* Ensure it's above other content */
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
+            
+        }
+
+        #alert-box.show {
+            display: block;
+            opacity: 1;
+        }
+
+        .activity-logged {
+            box-shadow: 0 4px 8px rgb(23, 159, 48); /* Shadow effect */
+        }
+
+        .collapse-content {
+            transition: max-height 0.3s ease-out;
+            overflow: hidden;
+            max-height: 0;
+        }
+
+        .collapse input:checked + .collapse-title + .collapse-content {
+            max-height: 1000px; /* Large enough value to accommodate content */
+        }
+        .bg-gradient-to-r, .navbar, #alert-box{
+            font-family: Poppins;
+        }
+        
+        
+    </style>
+    <script>
+        // Function to show an alert
+        function showAlert(message, type) {
+            const alertBox = document.getElementById('alert-box');
+            const alertMessage = document.getElementById('alert-message');
+            alertMessage.textContent = message;
+            alertBox.className = `p-2 pl-[10px] rounded-2xl shadow-lg text-black ${type === 'success' ? 'bg-yellow-500' : 'bg-red-500'} w-[200px] lg:w-[200px] show`;
+            
+            // Make sure alert box is visible
+            alertBox.style.display = 'block';
+            
+            setTimeout(() => {
+                alertBox.classList.remove('show');
+                // Hide after transition ends
+                setTimeout(() => {
+                    alertBox.style.display = 'none';
+                }, 500); // Match the transition duration
+            }, 2000); // Show for 2 seconds
+        }
+
+        async function fetchData(date) {
+            const response = await fetch(`/data?date=${date}`);  //await fetch(`/data?date=${date}`);
+            const data = await response.json();
+            renderData(data);
+        }
+
+        function renderData(data) {
+            const container = document.getElementById('activity-container');
+            container.innerHTML = ''; // Clear previous data
+
+            for (let hour = 0; hour < 24; hour++) {
+                const activity = data.track.find(track => track.time === hour.toString());
+                const activityText = activity ? activity.activity : 'No activity logged';
+                const checkProHour = activity ? activity.proHour: 'false';
+                const proHourText = checkProHour === true ? "checked": "";
+                // console.log(proHourText);
+                const isSleep = activity ? activity.sleep: 'false';
+                const sleepText = isSleep === true ? "checked": "";
+                // console.log(sleepText)
+                const nextHour = (hour + 1) % 24; // Wrap around to 0 after 23
+                const periodStart = hour < 12 ? 'am' : 'pm';
+                const periodEnd = nextHour < 12 ? 'am' : 'pm';
+                const displayHourStart = hour % 12 || 12; // Convert 24-hour format to 12-hour format
+                const displayHourEnd = nextHour % 12 || 12; // Convert 24-hour format to 12-hour format
+
+                const collapse = document.createElement('div');
+                collapse.className = `collapse bg-gradient-to-r from-[#1E293B] to-[#374151] p-3 lg:p-4 ${activity ? 'activity-logged' : ''}`;
+                collapse.innerHTML = `
+                    <input type="checkbox" />
+                    <div class="collapse-title text-xl font-medium">${displayHourStart} - ${displayHourEnd} ${periodStart}${periodStart !== periodEnd ? `/${periodEnd}` : ''}</div>
+                    <div class="collapse-content" id="content-${hour}">
+                        
+                        <p class="mb-2 font-semibold" id="activity-text-${hour}">${activityText}</p>
+                        <hr/>
+                        <input class="input input-sm mt-2" type="text" placeholder="Add activity" id="input-${hour}" style="display: none;">
+                        <div class="flex space-x-2 mt-2">
+                            <p class="text-[#64748B] mr-[25px]">Was it Productive?</p>
+                            <input id="pro-hour-${hour}" type="checkbox" class=" toggle toggle-success" ${proHourText} />
+                        </div>
+                        <div class="flex space-x-2 mt-2">
+                            <p class="text-[#64748B] mr-[15px]">Were You sleeping?</p>
+                            <input id="sleep-hour-${hour}" type="checkbox" class="toggle toggle-warning" ${sleepText} />
+                        </div>
+                        
+                        
+                        <div class="flex space-x-2">
+                            <button id="add-button-${hour}" onclick="showInputField(${hour})" class="btn btn-sm bg-[#3F3F46] text-white mt-5" style="display: ${activity ? 'none' : 'block'};">Add Activity</button>
+                            <button id="edit-button-${hour}" onclick="editActivity(${hour})" class="btn btn-sm bg-[#3F3F46] text-white mt-5" style="display: ${activity ? 'block' : 'none'};">Edit</button>
+                            <button id="save-button-${hour}" onclick="saveActivity('${data.date}', ${hour})" class="btn btn-sm bg-[#3F3F46] text-white mt-5" style="display: none;">Save</button>
+                            <button id="delete-button-${hour}" onclick="deleteActivity('${data.date}', ${hour})" class="btn btn-sm bg-[#3F3F46] text-white mt-5" style="display: ${activity ? 'block' : 'none'};">Delete</button>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(collapse);
+            }
+        }
+
+        function showInputField(hour) {
+            // const inputElement = document.getElementById(`input-${hour}`);
+            // if (inputElement) {
+            //     inputElement.style.display = 'block'; // Ensure the input is visible
+            // // inputElement.focus(); // Set focus to the input
+            // }
+            document.getElementById(`input-${hour}`).style.display = 'block';
+            document.getElementById(`add-button-${hour}`).style.display = 'none';
+            document.getElementById(`save-button-${hour}`).style.display = 'block';
+        }
+
+        function editActivity(hour) {
+            const activityText = document.getElementById(`activity-text-${hour}`).innerText;
+            document.getElementById(`input-${hour}`).value = activityText;
+            document.getElementById(`activity-text-${hour}`).style.display = 'none';
+            document.getElementById(`input-${hour}`).style.display = 'block';
+            document.getElementById(`edit-button-${hour}`).style.display = 'none';
+            document.getElementById(`save-button-${hour}`).style.display = 'block';
+        }
+
+        async function saveActivity(date, hour) {
+            const activity = document.getElementById(`input-${hour}`).value;
+            const proHour = document.getElementById(`pro-hour-${hour}`).checked;
+            const sleep = document.getElementById(`sleep-hour-${hour}`).checked;
+            if (activity) {
+                const response = await fetch('/add-activity', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ date, hour, activity, proHour, sleep })
+                });
+                if (response.ok) {
+                    showAlert('Saved!', 'success');
+                    fetchData(date.split('T')[0]); // Refresh data
+                } else {
+                    showAlert('Error saving activity.', 'error');
+                }
+            } else {
+                showAlert('Please enter an activity.', 'error');
+            }
+        }
+
+        async function deleteActivity(date, hour) {
+            const response = await fetch('/delete-activity', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ date, hour })
+            });
+            if (response.ok) {
+                showAlert('Deleted!', 'success');
+                fetchData(date.split('T')[0]); // Refresh data
+            } else {
+                showAlert('Error deleting activity.', 'error');
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const dateInput = document.querySelector('input[type="date"]');
+            dateInput.addEventListener('change', () => {
+                fetchData(dateInput.value);
+            });
+
+            // Fetch data for current date on page load
+            const today = new Date().toISOString().split('T')[0];
+            dateInput.value = today;
+            fetchData(today);
+        });
+    </script>
+</head>
+<body>
+    <div id="alert-box" class="rounded-2xl">
+      <span id="alert-message"></span>
+    </div>
+
+    <div class="navbar bg-[#1C1917] fixed text-neutral-content z-50 ">
+        
+        <div class="navbar-start lg:ml-[300px] ml-1">
+            <img class="w-[70px] h-[70px]  object-cover rounded-full" src="/profile-picture.jpg" alt="">
+            <p class="ml-2 lg:ml-4 text-xl">KYs</p>
+        </div>
+        <div class="navbar-center ml-2">
+            <input  type="date" class="ml-4 input  input-sm lg:input-md input-bordered input-info block mx-auto  w-[145px] lg:w-[220px] max-w-xs">
+        </div>
+        <div class="navbar-end lg:mr-[300px]">
+            <ul class="menu menu-horizontal px-1">
+                <li>
+                  <details>
+                    <summary><img class="w-10 h-8" src="/stat.svg" alt=""></summary>
+                    <ul class="bg-base-100 rounded-t-none p-2 ">
+                        <% const today = new Date().toISOString().split('T')[0]; %>
+                      <li ><a class="" href="/demo?date=<%=today%>">Day</a></li>
+                      <li ><a href="/weekly?startDate=<%=today%>">Week</a></li>
+                    </ul>
+                  </details>
+                </li>
+              </ul>
+        </div>
+    </div>
+<!-- this is for overflow content  -->
+    <div class="mb-20 ">..</div>
+
+     
+      
+    
+    <div id="activity-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-2 lg:p-4 w-full"></div>
+  </body>
+  <script src="/demo.js"></script>
+</html>
