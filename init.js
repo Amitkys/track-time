@@ -4,13 +4,15 @@ const TimeTrack = require('./models/log_time.js');
 
 
 // Async function to connect to MongoDB
+
 async function main() {
-    try {
-      await mongoose.connect("mongodb://127.0.0.1:27017/TimeTrack");
+  const dbUri = process.env.MONGODB_URI || "mongodb+srv://amitkys:qgejTqCQyRrRnZbVL@cluster0.jiwi9.mongodb.net/Track-time";
+  try {
+      await mongoose.connect(dbUri);
       console.log(`Connected To DB`);
-    } catch (err) {
+  } catch (err) {
       console.log(`Error in Connectivity to DB`, err);
-    }
+  }
 }
 
 const sampleData = [

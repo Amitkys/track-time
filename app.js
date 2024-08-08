@@ -18,8 +18,9 @@ app.use(methodOverride('_method'));
 
 // Async function to connect to MongoDB
 async function main() {
+    const dbUri = process.env.MONGODB_URI || "mongodb+srv://amitkys:qgejTqCQyRrRnZbVL@cluster0.jiwi9.mongodb.net/Track-time";
     try {
-        await mongoose.connect("mongodb://127.0.0.1:27017/TimeTrack");
+        await mongoose.connect(dbUri);
         console.log(`Connected To DB`);
     } catch (err) {
         console.log(`Error in Connectivity to DB`, err);
