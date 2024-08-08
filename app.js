@@ -1,9 +1,11 @@
+require('dotenv').config(); // Add this line at the top of your app.js
 const express = require('express');
 const mongoose = require('mongoose');
 const path = require('path');
 const ejsMate = require('ejs-mate');
 const methodOverride = require('method-override');
 const TimeTrack = require('./models/log_time.js');
+
 
 const app = express();
 app.use(express.json()); // Middleware to parse JSON bodies

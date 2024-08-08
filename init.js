@@ -4,7 +4,6 @@ const TimeTrack = require('./models/log_time.js');
 
 
 // Async function to connect to MongoDB
-
 async function main() {
   const dbUri = process.env.MONGODB_URI || "mongodb+srv://amitkys:qgejTqCQyRrRnZbVL@cluster0.jiwi9.mongodb.net/Track-time";
   try {
