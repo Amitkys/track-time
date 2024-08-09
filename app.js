@@ -114,7 +114,7 @@ app.get('/demo', async (req, res) => {
             return res.render('./timeParts/demo.ejs', { allData: [], date, error:true, errorMsg: 'No data found for this date' });
         }
         
-        res.render('./timeParts/demo.ejs', { allData, date, error: false }); // if data found, client will handle that there is no error
+        res.render('./timeParts/demo.ejs', { allData, date, error: false,  }); // if data found, client will handle that there is no error
     } catch (error) {
         console.error(error);
         res.status(500).send('Internal Server Error');

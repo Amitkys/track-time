@@ -14,6 +14,67 @@
       html {
         background-color: black !important;
       }
+
+      body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        .alertmsg {
+            background-color: white; /* Red background */
+            color: black; /* White text */
+            text-align: center; /* Center the text */
+            padding: 15px; /* Some padding */
+            position: fixed; /* Stay fixed at the top */
+            top: -100px; /* Initially hidden */
+            left: 80px; /* Decreased width from left */
+            right: 80px; /* Decreased width from right */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Optional shadow for effect */
+            border-radius: 5px; /* Rounded corners */
+            animation: slideDown 0.5s forwards; /* Slide down animation */
+        }
+
+        /* Keyframes for sliding down */
+        @keyframes slideDown {
+            from {
+                top: -100px;
+            }
+            to {
+                top: 20px;
+            }
+        }
+
+        /* Style for the close button */
+        .close-btn {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            font-size: 20px;
+            font-weight: bold;
+            color: black;
+        }
+
+        /* Hover effect for close button */
+        .close-btn:hover {
+            color: #bbb;
+        }
+
+        /* CSS for dismissing the alert */
+        .hidden {
+            display: none;
+        }
+        /* CSS styles for screens with a width of 400px or less */
+        @media (max-width: 500px) {
+    
+        .alertmsg{
+            left: 30px; /* Decreased width from left */
+            right: 30px; /* Decreased width from right */
+        }
+}
+
+
     </style>
 </head>
 <body style="background-color: black; color: white; font-family: Poppins;" class="h-screen">
@@ -29,33 +90,9 @@
 
     
   <% if (error) { %>
-    <div 
-    role="alert" 
-    class="alert alert-info flex items-center justify-between max-w-xl mx-auto my-4 px-4 py-2">
-    
-    <div class="flex items-center">
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        fill="none"
-        viewBox="0 0 24 24"
-        class="h-6 w-6 shrink-0 stroke-current">
-        <path
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          stroke-width="2"
-          d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-      </svg>
-      <span class="ml-2"><%= errorMsg %></span>
-    </div>
-  
-    <button
-      type="button"
-      class="ml-auto btn btn-sm btn-ghost"
-      onclick="this.parentElement.style.display='none';"
-      aria-label="Close"
-    >
-      ✕
-    </button>
+    <div class="alertmsg bg-yellow-400">
+      <span class="close-btn">&times;</span>
+      <%=errorMsg %>
   </div>
   <% } else { %>
     
@@ -187,6 +224,21 @@ function graph(chartId, label, data, color){
 
 
   <% } %>
+
+  <script>
+     // JavaScript to handle the dismiss button
+     const alertBox = document.querySelector('.alertmsg');
+        const closeButton = document.querySelector('.close-btn');
+
+        closeButton.addEventListener('click', function() {
+            alertBox.classList.add('hidden');
+        });
+
+        // Auto-remove alert after 3 seconds
+        setTimeout(function() {
+            alertBox.classList.add('hidden');
+        }, 4000); // 3000 milliseconds = 3 seconds
+  </script>
 
 </body>
 </html>
