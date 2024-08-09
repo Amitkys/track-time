@@ -17,19 +17,48 @@
     </style>
 </head>
 <body style="background-color: black; color: white; font-family: Poppins;" class="h-screen">
+
+
+  <div class="lg:ml-[540px] ml-[20px] mb-12">
+    <h1 class="mb-4 text-[25px] mb-3 text-[#94A3B8]">Choose Start Date to get Weekly Insights</h1>
+    <form action="/weekly" method="get">
+      <input class="input lg:input-md input-sm input-bordered input-warning" type="date" name="startDate" value="<%=startDate%>">
+      <button class="btn btn-sm btn-warning hover:bg-yellow-700" type="submit">Submit</button>
+    </form>
+  </div>
+
     
   <% if (error) { %>
-    <div class="alert alert-error">
-        <%= errorMsg %>
+    <div 
+    role="alert" 
+    class="alert alert-info flex items-center justify-between max-w-xl mx-auto my-4 px-4 py-2">
+    
+    <div class="flex items-center">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+        class="h-6 w-6 shrink-0 stroke-current">
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+      </svg>
+      <span class="ml-2"><%= errorMsg %></span>
     </div>
+  
+    <button
+      type="button"
+      class="ml-auto btn btn-sm btn-ghost"
+      onclick="this.parentElement.style.display='none';"
+      aria-label="Close"
+    >
+      ✕
+    </button>
+  </div>
   <% } else { %>
-    <div class="lg:ml-[540px] ml-[20px] mb-12">
-      <h1 class="mb-4 text-[25px] mb-3 text-[#94A3B8]">Choose Start Date to get Weekly Insights</h1>
-      <form action="/weekly" method="get">
-        <input class="input lg:input-md input-sm input-bordered input-warning" type="date" name="startDate" value="<%=startDate%>">
-        <button class="btn btn-sm btn-warning hover:bg-yellow-700" type="submit">Submit</button>
-      </form>
-    </div>
+    
 
     <% 
       let dailyData = [];

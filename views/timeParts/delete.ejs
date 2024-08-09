@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tailwind Custom Alert</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="flex items-center justify-center min-h-screen bg-black">
+
+    <script>
+        function showAlert(text, bgColor) {
+            const alert = document.getElementById('customAlert');
+            const alertText = document.getElementById('alertText');
+
+            // Set the text
+            alertText.textContent = text;
+
+            // Apply the background color
+            alert.className = `fixed top-4 left-1/2 transform -translate-x-1/2 -translate-y-full opacity-0 p-2 text-white text-lg font-bold rounded shadow-xl transition-all duration-500 ease-in-out flex items-center space-x-2 ${bgColor}`;
+
+            // Show the alert
+            alert.classList.remove('-translate-y-full', 'opacity-0');
+            alert.classList.add('translate-y-0', 'opacity-100');
+
+            // Hide the alert after 3 seconds
+            setTimeout(() => {
+                alert.classList.remove('translate-y-0', 'opacity-100');
+                alert.classList.add('-translate-y-full', 'opacity-0');
+            }, 3000); // Alert stays visible for 3 seconds
+        }
+    </script>
+
+    <% if(true){ %>
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                showAlert('Hello', 'bg-green-500');
+            });
+        </script>
+    <% } %>
+
+    <!-- Button to trigger the alert manually -->
+    <button onclick="showAlert('Login Successful', 'bg-green-500')" class="px-4 py-2 text-white bg-blue-500 rounded hover:bg-blue-600">
+        Click Me
+    </button>
+
+    <div id="customAlert" class="fixed top-4 left-1/2 transform -translate-x-1/2 -translate-y-full opacity-0 p-2 text-white text-lg font-bold rounded shadow-xl transition-all duration-500 ease-in-out flex items-center space-x-2">
+        <span id="alertText">Alert Text</span>
+    </div>
+
+</body>
+</html>
