@@ -150,11 +150,17 @@ app.get('/weekly', async (req, res) => {
     }
 });
 
+app.get('/gm', (req, res) => {
+    res.render("gm.ejs")
+})
+
 
 
 app.get('/delete', (req, res) => {
     res.render('./timeParts/delete.ejs');
 })
+
+
 
 app.listen(3000, '0.0.0.0', () => {
   console.log('Server is running at http://0.0.0.0:3000');

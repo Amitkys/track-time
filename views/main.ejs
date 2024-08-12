@@ -203,16 +203,20 @@
     <div class="navbar bg-[#1C1917] fixed text-neutral-content z-50 ">
         
         <div class="navbar-start lg:ml-[300px] ml-1">
-            <img class="w-[70px] h-[70px]  object-cover rounded-full" src="/profile-picture.jpg" alt="">
-            <p class="ml-2 lg:ml-4 text-xl">KYs</p>
+            <!-- <img class="w-[70px] h-[70px]  object-cover rounded-full" src="/profile-picture.jpg" alt="">
+            <p class="ml-2 lg:ml-4 text-xl">KYs</p> -->
+            <a href="/gm"><p class="ml-2 lg:ml-4 text-xl font-bold">Good Morning</p></a>
+            
         </div>
         <div class="navbar-center ml-2">
             <input  type="date" class="ml-4 input  input-sm lg:input-md input-bordered input-info block mx-auto  w-[145px] lg:w-[220px] max-w-xs">
         </div>
         <div class="navbar-end lg:mr-[300px]">
+            
             <ul class="menu menu-horizontal px-1">
                 <li>
                   <details>
+                    
                     <summary><img class="w-10 h-8" src="/stat.svg" alt=""></summary>
                     <ul class="bg-base-100 rounded-t-none p-2 ">
                         <% const today = new Date().toISOString().split('T')[0]; %>
@@ -222,6 +226,7 @@
                   </details>
                 </li>
               </ul>
+             
         </div>
     </div>
 <!-- this is for overflow content  -->

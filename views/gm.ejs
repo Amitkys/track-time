@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;400;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/locomotive-scroll/dist/locomotive-scroll.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+        }
+
+        [data-scroll-container] {
+            height: auto;
+            overflow: hidden;
+        }
+
+        html, body {
+            height: 100%;
+            overflow: hidden;
+        }
+
+        .opacity-0 {
+            opacity: 0;
+            transition: opacity 3s ease-in-out;
+        }
+
+        .opacity-0.is-inview {
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+    <div data-scroll-container class="bg-gradient-to-tr from-[#020617] to-[#1E293B] text-center">
+        <div class="h-screen flex items-center justify-center px-4 flex-col">
+            <h1 data-scroll data-scroll-speed="1" data-scroll-delay="0.2" class="text-[#94A3B8] text-[55px] lg:text-[85px] opacity-0">A Picture that you saw, when you got <span class="text-[#475569]">rejected</span> in VIT.</h1>
+            <h1 data-scroll data-scroll-speed="2" data-scroll-delay="0.4" class="mt-10 text-[20px] text-[#1E293B] opacity-0">have you remember?</h1>
+        </div>
+        <div class="h-screen flex items-center justify-center px-4 flex-col">
+            <h1 data-scroll data-scroll-speed="1" data-scroll-delay="0.3" class="text-[#94A3B8] text-[55px] lg:text-[85px] opacity-0">You were trolled out and judge, <span class="text-[#475569]">to not crack VIT</span></h1>
+            <h1 data-scroll data-scroll-speed="2" data-scroll-delay="0.5" class="mt-10 text-[20px] text-[#1E293B] opacity-0">have you remember?</h1>
+        </div>
+        <div class="h-screen flex items-center justify-center px-4 flex-col">
+            <h1 data-scroll data-scroll-speed="1" data-scroll-delay="0.4" class="text-[#94A3B8] text-[55px] lg:text-[85px] opacity-0"><span class="text-[#475569]">You decided,</span> to walked out NIT gate with bag pack</h1>
+            <h1 data-scroll data-scroll-speed="2" data-scroll-delay="0.6" class="mt-10 text-[20px] text-[#1E293B] opacity-0">have you remember?</h1>
+        </div>
+
+        <a href="/"><button class="btn btn-sm px-48 mb-4">Go to Work</button></a>
+    </div>
+    
+    <!-- Locomotive Scroll JS -->
+    <script src="https://cdn.jsdelivr.net/npm/locomotive-scroll/dist/locomotive-scroll.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const scroll = new LocomotiveScroll({
+                el: document.querySelector('[data-scroll-container]'),
+                smooth: true,
+            });
+        });
+    </script>
+</body>
+</html>
