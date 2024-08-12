@@ -59,20 +59,22 @@
     
   <% } else { %>
 
-    <% let productiveH = 0, sleepH = 0, unused = 0 %>
-    
+    <% let productiveH = 0, sleepH = 0, unused = 0; %>
+
     <% for (let dataS of allData) { %>
         <% for (let data of dataS.track) { %>
             <% if (data.proHour) { %>
                 <% productiveH++; %>
-            <% } %>
-            <% if (data.sleep) { %>
+            <% } else if (data.sleep) { %>
                 <% sleepH++; %>
+            <% } else { %>
+                <% unused++; %>
             <% } %>
         <% } %>
     <% } %>
+    
 
-    <% unused = 24 - (productiveH + sleepH); %>
+    
 
     <section class="body-font">
       <div class="container px-5 mx-auto">
@@ -111,9 +113,9 @@
   </div>
 
     <script>
-      var xValues = ["Productive", "Sleep", "Unused"];
+      var xValues = ["Productive", "Sleep", "Unused", "kys"];
       var yValues = [<%= productiveH %>, <%= sleepH %>, <%= unused %>];
-      var barColors = ["green", "yellow", "red"];
+      var barColors = ["green", "yellow", "red", ];
 
       new Chart("myChart", {
         type: "bar",
