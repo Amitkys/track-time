@@ -108,6 +108,7 @@ app.post('/delete-activity', async (req, res) => {
 app.get('/demo', async (req, res) => {
     try {
         const { date } = req.query;
+        console.log(date);
         const allData = await TimeTrack.find({ date });
         
         if (!allData.length) {

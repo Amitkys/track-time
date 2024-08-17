@@ -189,7 +189,10 @@
             });
 
             // Fetch data for current date on page load
-            const today = new Date().toISOString().split('T')[0];
+            // const today = new Date().toISOString().split('T')[0];
+            const now = new Date();
+            const nowIST = new Date(now.getTime() + (5.5 * 60 * 60 * 1000));
+            const today = nowIST.toISOString().split('T')[0];
             dateInput.value = today;
             fetchData(today);
         });
@@ -219,7 +222,11 @@
                     
                     <summary><img class="w-10 h-8" src="/stat.svg" alt=""></summary>
                     <ul class="bg-base-100 rounded-t-none p-2 ">
-                        <% const today = new Date().toISOString().split('T')[0]; %>
+                        <%
+                            const now = new Date();
+                            const nowIST = new Date(now.getTime() + (5.5 * 60 * 60 * 1000));
+                            const today = nowIST.toISOString().split('T')[0];
+                        %>
                       <li ><a class="" href="/demo?date=<%=today%>">Day</a></li>
                       <li ><a href="/weekly?startDate=<%=today%>">Week</a></li>
                     </ul>
